@@ -1,61 +1,13 @@
-# .
+# Blog Frontend FSD
 
-This template should help get you started developing with Vue 3 in Vite.
+This is the frontend part of a blogging platform built with Vue.js, TypeScript, and following the Feature-Sliced Design (FSD) methodology. The application leverages WebSocket for real-time communication and includes the following features:
 
-## Recommended IDE Setup
+- **Posts**: Create, delete, and manage blog posts.
+- **Comments**: Users can comment on posts and manage their comments.
+- **Profile Management**: Each user has a profile with information about their activity.
+- **Likes**: Users can like both posts and comments.
+- **Subscriptions**: Follow authors to receive updates on their posts.
+- **Followers**: Users can view their subscribers and who they are following.
+- **Chat**: Real-time chat functionality that allows users to communicate with each other, enhancing community interaction.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-pnpm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-pnpm dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-pnpm build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-pnpm test:unit
-```
-
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
-
-```sh
-pnpm test:e2e:dev
-```
-
-This runs the end-to-end tests against the Vite development server.
-It is much faster than the production build.
-
-But it's still recommended to test the production build with `test:e2e` before deploying (e.g. in CI environments):
-
-```sh
-pnpm build
-pnpm test:e2e
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-pnpm lint
-```
+This project aims to provide a seamless user experience for interacting with blog content and maintaining an active community.
