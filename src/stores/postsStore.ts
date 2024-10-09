@@ -21,7 +21,7 @@ export const usePostsStore = defineStore('postsStore', () => {
     try {
       const token = getToken()
 
-      const response = await fetch('http://localhost:3000/posts', {
+      const response = await fetch('http://localhost:3000/api/posts', {
         method: 'GET',
         headers: {
           Authorization: token
@@ -41,7 +41,7 @@ export const usePostsStore = defineStore('postsStore', () => {
     try {
       const token = getToken()
 
-      const response = await fetch(`http://localhost:3000/posts/${post_id}`, {
+      const response = await fetch(`http://localhost:3000/api/posts/${post_id}`, {
         method: 'DELETE',
         headers: {
           Authorization: token
@@ -68,7 +68,7 @@ export const usePostsStore = defineStore('postsStore', () => {
     try {
       const token = getToken()
 
-      const response = await fetch(`http://localhost:3000/votes`, {
+      const response = await fetch(`http://localhost:3000/api/votes`, {
         method: 'POST',
         headers: {
           Authorization: token,
@@ -98,7 +98,7 @@ export const usePostsStore = defineStore('postsStore', () => {
     try {
       const token = getToken()
 
-      const response = await fetch(`http://localhost:3000/votes`, {
+      const response = await fetch(`http://localhost:3000/api/votes`, {
         method: 'DELETE',
         headers: {
           Authorization: token,
@@ -167,7 +167,7 @@ export const usePostsStore = defineStore('postsStore', () => {
     try {
       const token = getToken()
 
-      const response = await fetch('http://localhost:3000/posts', {
+      const response = await fetch('http://localhost:3000/api/posts', {
         method: 'POST',
         headers: {
           Authorization: token
@@ -195,7 +195,7 @@ export const usePostsStore = defineStore('postsStore', () => {
     try {
       const token = getToken()
 
-      const response = await fetch(`http://localhost:3000/posts/${id}`, {
+      const response = await fetch(`http://localhost:3000/api/posts/${id}`, {
         method: 'GET',
         headers: {
           Authorization: token
@@ -218,7 +218,7 @@ export const usePostsStore = defineStore('postsStore', () => {
     try {
       const token = getToken()
 
-      const response = await fetch(`http://localhost:3000/comments/${id}`, {
+      const response = await fetch(`http://localhost:3000/api/posts/${id}/comments`, {
         method: 'GET',
         headers: {
           Authorization: token
@@ -241,7 +241,7 @@ export const usePostsStore = defineStore('postsStore', () => {
     try {
       const token = getToken()
 
-      const response = await fetch(`http://localhost:3000/comments`, {
+      const response = await fetch(`http://localhost:3000/api/comments`, {
         method: 'POST',
         headers: {
           Authorization: token,

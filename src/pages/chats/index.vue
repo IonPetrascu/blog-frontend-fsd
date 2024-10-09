@@ -25,7 +25,7 @@ const activeChat = computed<ChatType | null>(() => {
 
 
 function connect() {
-  socket.value = new WebSocket("ws://localhost:3000");
+  socket.value = new WebSocket("ws://localhost:3001");
 
   socket.value.onopen = () => {
     connected.value = true;
@@ -59,9 +59,9 @@ function connect() {
     }
   };
 
-  /*   socket.current.onclose = () => {
-    console.log("Socket closed");
-  }; */
+  /*  socket.value.onclose = () => {
+     console.log("Socket closed");
+   }; */
 
   socket.value.onerror = (): void => {
     console.error("Socket error");

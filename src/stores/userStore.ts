@@ -40,7 +40,7 @@ export const useUsersStore = defineStore('usersStore', () => {
     try {
       const token = checkToken()
 
-      const response = await fetch(`http://localhost:3000/userinfo`, {
+      const response = await fetch(`http://localhost:3000/api/info`, {
         method: 'GET',
         headers: {
           Authorization: token
@@ -62,7 +62,7 @@ export const useUsersStore = defineStore('usersStore', () => {
   }
 
   const login = async (email: string, password: string) => {
-    const response = await fetch('http://localhost:3000/login', {
+    const response = await fetch('http://localhost:3000/api/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -84,7 +84,7 @@ export const useUsersStore = defineStore('usersStore', () => {
   }
 
   const register = async (email: string, name: string, password: string) => {
-    const response = await fetch('http://localhost:3000/register', {
+    const response = await fetch('http://localhost:3000/api/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -109,7 +109,7 @@ export const useUsersStore = defineStore('usersStore', () => {
     try {
       const token = checkToken()
 
-      const response = await fetch(`http://localhost:3000/profile/${id}`, {
+      const response = await fetch(`http://localhost:3000/api/profile/${id}`, {
         method: 'GET',
         headers: {
           Authorization: token
@@ -133,11 +133,9 @@ export const useUsersStore = defineStore('usersStore', () => {
 
   const subscribeToUser = async (subscribed_to_id: number) => {
     try {
-      console.log('sub')
-
       const token = checkToken()
 
-      const response = await fetch(`http://localhost:3000/subscriptions/${subscribed_to_id}`, {
+      const response = await fetch(`http://localhost:3000/api/subscriptions/${subscribed_to_id}`, {
         method: 'POST',
         headers: {
           Authorization: token
@@ -160,10 +158,9 @@ export const useUsersStore = defineStore('usersStore', () => {
 
   const deleteSubscription = async (subscribed_to_id: number) => {
     try {
-      console.log('dell sub')
       const token = checkToken()
 
-      const response = await fetch(`http://localhost:3000/subscriptions/${subscribed_to_id}`, {
+      const response = await fetch(`http://localhost:3000/api/subscriptions/${subscribed_to_id}`, {
         method: 'DELETE',
         headers: {
           Authorization: token
@@ -190,7 +187,7 @@ export const useUsersStore = defineStore('usersStore', () => {
     try {
       const token = checkToken()
 
-      const response = await fetch('http://localhost:3000/profile-img', {
+      const response = await fetch('http://localhost:3000/api/profile/img', {
         method: 'PATCH',
         headers: {
           Authorization: token
@@ -230,7 +227,7 @@ export const useUsersStore = defineStore('usersStore', () => {
     }
   }
 
-  const sendTokenToServer = async (credential) => {
+  const sendTokenToServer = async (credential: string) => {
     try {
       const response = await fetch('http://localhost:3000/api/auth/google', {
         method: 'POST',

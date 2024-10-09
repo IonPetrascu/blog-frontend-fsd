@@ -24,7 +24,7 @@ export const useChatsStore = defineStore('chatsStore', () => {
     try {
       const token = getToken()
 
-      const response = await fetch('http://localhost:3000/chats', {
+      const response = await fetch('http://localhost:3000/api/chats', {
         method: 'GET',
         headers: {
           Authorization: token
@@ -45,7 +45,7 @@ export const useChatsStore = defineStore('chatsStore', () => {
     try {
       const token = getToken()
 
-      const response = await fetch('http://localhost:3000/chats', {
+      const response = await fetch('http://localhost:3000/api/chats', {
         method: 'POST',
         headers: {
           Authorization: token,
