@@ -8,8 +8,8 @@ defineProps<{
 </script>
 <template>
   <div class="chat-header">
-    <img v-if="activeChat.user_img" class="chat-img-user" :src="`http://localhost:3000/${activeChat.user_img}`"
-      alt="default user img" />
+    <img v-if="activeChat.user_img" class="chat-img-user"
+      :src="`http://localhost:3000/upload/images/${activeChat.user_img}`" alt="default user img" />
     <img v-else class="chat-img-user" src="@/assets/images/default-user-img.jpg" alt="default image" />
 
     <div class="chat-info">

@@ -28,7 +28,7 @@ const emit = defineEmits<{
       <ul class="sub-list" v-if="data.length > 0">
         <div class="sub-item" v-for="subscriber in data" :key="subscriber.subscriber_id">
           <div>
-            <img v-if="subscriber.img" class="sub-img" :src="`http://localhost:3000/${subscriber.img}`" />
+            <img v-if="subscriber.img" class="sub-img" :src="`http://localhost:3000/upload/images/${subscriber.img}`" />
             <img v-else class="sub-img" src="@/assets/images/default-user-img.jpg" alt="default-user-img" />
           </div>
           <router-link class="user-info"

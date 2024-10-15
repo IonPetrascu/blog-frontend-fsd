@@ -81,12 +81,12 @@ const handleVote = async (is_like: boolean): Promise<void> => {
     <div class="comment">
       <div class="header-comment">
         <div class="comment-author-info">
-          <img v-if="localComment.u_img" class="comment-img" :src="`http://localhost:3000/${localComment.u_img}`"
-            alt="" />
+          <img v-if="localComment.u_img" class="comment-img"
+            :src="`http://localhost:3000/upload/images/${localComment.u_img}`" :alt="localComment.u_name" />
           <img v-else class="comment-img" src="@/assets/images/default-user-img.jpg" alt="default user img" />
           <router-link :to="`/profile/${localComment.user_id}`">{{
             localComment.u_name
-          }}</router-link>
+            }}</router-link>
           <span class="date">{{ localComment.created_at.slice(0, 10) }}</span>
         </div>
 

@@ -19,7 +19,7 @@ const emit = defineEmits<{
         class="chat-item" :class="{
           active: chat.chat_id === activeChatId,
         }">
-        <img v-if="chat.user_img" class="chat-item-img" :src="`http://localhost:3000/${chat.user_img}`"
+        <img v-if="chat.user_img" class="chat-item-img" :src="`http://localhost:3000/upload/images/${chat.user_img}`"
           :alt="chat.user_name" />
         <img v-else class="chat-item-img" src="@/assets/images/default-user-img.jpg" alt="default image" />
 

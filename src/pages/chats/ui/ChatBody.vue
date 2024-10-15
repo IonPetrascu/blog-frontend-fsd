@@ -40,8 +40,8 @@ const emit = defineEmits<{
       <li class="message-wrapper animation" v-for="msg in messages" :key="msg.id">
         <div class="message" v-if="msg.user_id !== userStore.user?.id">
           <div>
-            <img v-if="activeChat.user_img" class="user-img" :src="`http://localhost:3000/${activeChat.user_img}`"
-              alt="" />
+            <img v-if="activeChat.user_img" class="user-img"
+              :src="`http://localhost:3000/uploads/images/${activeChat.user_img}`" alt="" />
             <img v-else class="user-img" src="@/assets/images/default-user-img.jpg" alt="deafult image" />
           </div>
           <p class="message-text">{{ msg.content }}</p>
@@ -51,8 +51,8 @@ const emit = defineEmits<{
           <span class="time">{{ msg.sent_at.slice(11, 16) }}</span>
           <p class="message-text">{{ msg.content }}</p>
           <div>
-            <img v-if="userStore.user?.img" class="user-img" :src="`http://localhost:3000/${userStore.user.img}`"
-              alt="" />
+            <img v-if="userStore.user?.img" class="user-img"
+              :src="`http://localhost:3000/uploads/images/${userStore.user.img}`" alt="" />
             <img v-else class="user-img" src="@/assets/images/default-user-img.jpg" alt="deafult image" />
           </div>
         </div>

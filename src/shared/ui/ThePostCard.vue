@@ -43,8 +43,8 @@ const closePopup = (): void => {
       <img src="@/assets/icons/close-icon.svg" alt="delete post" />
     </button>
     <div class="post-img-wrapper">
-      <img v-if="post.img" class="post-img kenburns-bottom-left" :src="`http://localhost:3000/${post.img}`"
-        :alt="post.title" />
+      <img v-if="post.img" class="post-img kenburns-bottom-left"
+        :src="`http://localhost:3000/upload/images/${post.img}`" :alt="post.title" />
       <img class="post-img" v-else src="@/assets/images/default-post-image.png" alt="default-post-image" />
     </div>
 
@@ -56,8 +56,8 @@ const closePopup = (): void => {
 
       <div class="post-bottom">
         <div class="post-info">
-          <img v-if="post.user_img" class="post-author-img" :src="`http://localhost:3000/${post.user_img}`"
-            :alt="post.user_name" />
+          <img v-if="post.user_img" class="post-author-img"
+            :src="`http://localhost:3000/upload/images/${post.user_img}`" :alt="post.user_name" />
           <img v-else class="post-author-img" src="@/assets/images/default-user-img.jpg" :alt="post.user_name" />
           <router-link :to="`/profile/${post.user_id}`" class="post-name">{{
             post.user_name

@@ -114,11 +114,12 @@ const goBack = (): void => router.go(-1);
       <h1 class="post-title">{{ post.title }}</h1>
       <div class="img-wrapper">
         <div v-if="post.img" class="post-img bg-pan-bl"
-          :style="{ backgroundImage: `url(http://localhost:3000/${post.img})` }"></div>
+          :style="{ backgroundImage: `url(http://localhost:3000/upload/images/${post.img})` }">
+        </div>
         <div class="post-info">
           <router-link :to="`/profile/${post.u_id}`" class="author-wrapper">
-            <img class="post-author-img" :src="`http://localhost:3000/${post.u_img}`" :alt="post.u_name" /><span
-              class="post-info-author">Author: {{ post.u_name }}</span>
+            <img v-if="post.u_img" class="post-author-img" :src="`http://localhost:3000/upload/images/${post.u_img}`"
+              :alt="post.u_name" /><span class="post-info-author">Author: {{ post.u_name }}</span>
           </router-link>
 
           <span v-if="post.created_at !== undefined" class="post-info-date">{{
@@ -130,8 +131,8 @@ const goBack = (): void => router.go(-1);
     </div>
     <form class="form-comment" @submit.prevent="submitComment">
       <router-link :to="`/profile/${userStore.user.id}`">
-        <img v-if="userStore.user.img" class="user-img" :src="`http://localhost:3000/${userStore.user.img}`"
-          :alt="userStore.user.u_name" />
+        <img v-if="userStore.user.img" class="user-img"
+          :src="`http://localhost:3000/upload/images/${userStore.user.img}`" :alt="userStore.user.u_name" />
         <img v-else class="user-img" src="@/assets/images/default-user-img.jpg" :alt="post.u_name" />
       </router-link>
 
