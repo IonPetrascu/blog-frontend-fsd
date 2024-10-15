@@ -7,6 +7,7 @@ import type { Ref } from 'vue';
 interface Popup {
   id: number
   title: string
+  imgName: string
 }
 
 const store = usePostsStore();
@@ -15,7 +16,7 @@ const popupInfo = ref<Popup | null>(null);
 
 const deletePost = (): void => {
   if (!popupInfo.value) return
-  store.deletePost(popupInfo.value.id);
+  store.deletePost(popupInfo.value.id, popupInfo.value.img);
   closePopup();
 };
 

@@ -22,7 +22,7 @@ const handleVote = (vote: boolean): void => { store.addVoteToPost(vote, props.po
 
 const deletePost = (): void => {
   if (!popupInfo.value) return
-  store.deletePost(popupInfo.value.id);
+  store.deletePost(popupInfo.value.id, props.post.img, props.post.video);
   closePopup();
 };
 

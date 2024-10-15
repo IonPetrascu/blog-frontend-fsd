@@ -37,15 +37,17 @@ export const usePostsStore = defineStore('postsStore', () => {
     }
   }
 
-  const deletePost = async (post_id: number) => {
+  const deletePost = async (post_id: number, imgName: string | null, videoName: string | null) => {
     try {
       const token = getToken()
 
       const response = await fetch(`http://localhost:3000/api/posts/${post_id}`, {
         method: 'DELETE',
         headers: {
-          Authorization: token
-        }
+          Authorization: token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ img: imgName || '', video: videoName || '' })
       })
 
       if (!response.ok) {
