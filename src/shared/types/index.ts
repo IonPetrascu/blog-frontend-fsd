@@ -22,6 +22,7 @@ export interface PostFull extends BasePost {
   u_email: string
   u_name: string
   u_img: number | null
+  u_video: string | null
 }
 
 export type PopupType = {

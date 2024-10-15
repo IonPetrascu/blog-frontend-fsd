@@ -5,6 +5,7 @@ import { usePostsStore } from "@/stores/postsStore";
 import { useUsersStore } from "@/stores/userStore";
 import { VMarkdownView } from "vue3-markdown";
 import TheComment from "@/shared/ui/TheComment.vue";
+import TheVideo from "@/shared/ui/TheVideo.vue";
 import type { PostFull, Mode, Comment, VoteComment, RespondType } from "@/shared/types";
 import type { Ref } from "vue";
 import "vue3-markdown/dist/style.css";
@@ -124,8 +125,11 @@ const goBack = (): void => router.go(-1);
 
           <span v-if="post.created_at !== undefined" class="post-info-date">{{
             post.created_at.slice(0, 10)
-          }}</span>
+            }}</span>
         </div>
+      </div>
+      <div>
+        <TheVideo v-if="post.video" :src="`http://localhost:3000/api/video/${post.video}`" />
       </div>
       <VMarkdownView v-if="post?.content" class="description" :mode="mode" :content="post.content"></VMarkdownView>
     </div>
