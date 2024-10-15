@@ -8,13 +8,17 @@ const showFormPost = ref(true);
 const title = ref("");
 const description = ref("");
 const previewImage = ref<string | null>(null);
+const previewVideoPath = ref<string | null>(null);
 const store = usePostsStore();
 const inputImg = ref(null);
+const inputVideo = ref(null);
 
 onMounted(() => store.getPosts());
 
 const handleSubmit = async () => {
   const file = inputImg.value?.files[0];
+  const video = inputVideo.value?.files[0];
+
   const formData = new FormData();
   if (!title.value || !description.value) {
     return;
@@ -23,7 +27,10 @@ const handleSubmit = async () => {
   formData.append("description", description.value);
 
   if (file) {
-    formData.append("img", file);
+    formData.append("file", file);
+  }
+  if (video) {
+    formData.append("video", video);
   }
 
   try {
@@ -39,10 +46,19 @@ const clearImage = () => {
     inputImg.value.value = "";
   }
   previewImage.value = null;
+
+};
+const clearVideo = () => {
+  if (inputVideo.value) {
+    inputVideo.value.value = "";
+  }
+  previewVideoPath.value = null;
+
 };
 
 const clearForm = () => {
   clearImage();
+  clearVideo();
   title.value = "";
   description.value = "";
 };
@@ -52,6 +68,9 @@ const handleImageChange = (event) => {
   if (file) {
     previewImage.value = URL.createObjectURL(file);
   }
+};
+const handleVideoChange = (event: Event) => {
+  previewVideoPath.value = (event.target as HTMLInputElement).value
 };
 
 const handleUpload = (file) => {
@@ -65,19 +84,37 @@ const handleUpload = (file) => {
     <form class="form" @submit.prevent="handleSubmit" v-if="showFormPost">
       <h3 class="title">Title post</h3>
       <input v-model="title" type="text" placeholder="Title of post" required />
-      <h3 class="title">Image post</h3>
+
+
       <div class="wrapper-img">
+        <h3 class="title">Image post</h3>
         <label v-if="!previewImage" class="label-file" for="input-file">Add image of post</label>
         <label v-else class="label-file" for="input-file">Change image of post</label>
+        <img class="img-preview" :class="{ active: previewImage !== null }" v-if="previewImage !== null"
+          :src="previewImage" alt="" />
+        <input ref="inputImg" id="input-file" type="file" accept="image/jpeg, image/png ,image/jpg"
+          @change="handleImageChange" />
         <button v-if="previewImage" type="button" @click="clearImage">
           Clear img
         </button>
       </div>
 
-      <img class="img-preview" :class="{ active: previewImage !== null }" v-if="previewImage !== null"
-        :src="previewImage" alt="" />
-      <input ref="inputImg" id="input-file" type="file" accept="image/jpeg, image/png ,image/jpg"
-        @change="handleImageChange" />
+
+
+
+      <div class="wrapper-video">
+        <h3 class="title">Image post</h3>
+        <label class="label-video" for="input-video">
+          <span v-if="!previewVideoPath">Add video</span>
+          <span v-else>Change video</span>
+        </label>
+        <input accept="video/mp4" type="file" id="input-video" ref="inputVideo" @change="handleVideoChange" />
+        <div v-if="previewVideoPath">
+          <span class="video-path"> {{ previewVideoPath }}</span>
+          <button class="btn-clear-video-path" @click="clearVideo">Delete video</button>
+        </div>
+      </div>
+
       <h3 class="title">Editor</h3>
       <VMarkdownEditor class="editor" v-model="description" locale="en" :upload-action="handleUpload" />
       <div class="buttons">
@@ -149,12 +186,15 @@ input[type="file"] {
   display: none;
 }
 
-.wrapper-img {
+.wrapper-img,
+.wrapper-video {
   display: flex;
+  flex-direction: column;
   gap: 10px;
+  margin-bottom: 10px;
 }
 
-.label-file {
+label {
   background: var(--c-2);
   padding: 10px;
   cursor: pointer;
@@ -172,5 +212,14 @@ input[type="file"] {
   border-radius: 10px;
   min-height: 100px;
   padding: 10px;
+}
+
+.video-path {
+  clear: var(--c-3);
+  margin-right: 10px;
+}
+
+.btn-clear-video-path {
+  background: var(--c-3);
 }
 </style>
