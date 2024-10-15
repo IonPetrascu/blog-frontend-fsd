@@ -196,7 +196,39 @@ export const useUsersStore = defineStore('usersStore', () => {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to add post')
+        throw new Error('Failed to change img')
+      }
+
+      const data = await response.json()
+
+      if (profile.value) {
+        profile.value.user.img = data.user.img
+      }
+      if (user.value) {
+        user.value.img = data.user.img
+      }
+
+      return data
+    } catch (err) {
+      err.value = err.message
+    }
+  }
+
+  const deleteProfileImg = async (imageName: string) => {
+    try {
+      const token = checkToken()
+
+      const response = await fetch('http://localhost:3000/api/profile/img', {
+        method: 'DELETE',
+        headers: {
+          Authorization: token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ img: imageName })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to change img')
       }
 
       const data = await response.json()
@@ -264,6 +296,7 @@ export const useUsersStore = defineStore('usersStore', () => {
     logout,
     deletePostFromProfile,
     checkCredential,
-    sendTokenToServer
+    sendTokenToServer,
+    deleteProfileImg
   }
 })

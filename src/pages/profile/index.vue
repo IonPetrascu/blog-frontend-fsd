@@ -68,7 +68,13 @@ const handleImageChange = async (event: Event) => {
     const formData = new FormData();
 
     if (!file) throw new Error("Error");
-    formData.append("img", file);
+
+    formData.append("file", file);
+
+    if (store.profile?.user.img) {
+      formData.append("name", store.profile.user.img);
+    }
+
     await store.changeProfileImg(formData);
     handleImgSettings();
   } catch (error) {
@@ -95,7 +101,7 @@ watch(
     <div class="profile-content">
       <div class="profile-header">
         <div class="profile-avatar">
-          <img v-if="store.profile?.user?.img" :src="`http://localhost:3000/${store.profile.user.img}`"
+          <img v-if="store.profile?.user?.img" :src="`http://localhost:3000/upload/images/${store.profile.user.img}`"
             alt="Profile Image" />
           <img v-else src="@/assets/images/default-user-img.jpg" alt="Profile Image" />
           <button v-if="isMyProfile" @click="handleImgSettings" class="profile-avatar-settings">
@@ -104,6 +110,7 @@ watch(
           <div class="avatar-settings-list" v-if="showImgSettings">
             <input ref="inputImg" id="input-file" multiple type="file" accept="image/jpeg, image/png ,image/jpg"
               @change="handleImageChange" />
+            <button @click="() => store.deleteProfileImg(store.profile?.user.img)">Delete image</button>
           </div>
         </div>
         <button v-if="isMyProfile" class="profile-edit-button">Edit</button>
@@ -128,13 +135,13 @@ watch(
         <div class="profile-stat-item">
           <span class="profile-stat-number">{{
             store.profile?.posts.length
-            }}</span>
+          }}</span>
           <span class="profile-stat-label">Posts</span>
         </div>
         <div class="profile-stat-item">
           <span class="profile-stat-number">{{
             store.profile?.subscribers.length
-            }}</span>
+          }}</span>
           <button @click="() => openSubPopup('subscribers')" class="profile-stat-label">
             Followers
           </button>
@@ -142,7 +149,7 @@ watch(
         <div class="profile-stat-item">
           <span class="profile-stat-number">{{
             store.profile?.subscribtions.length
-            }}</span>
+          }}</span>
           <button @click="() => openSubPopup('subscribtions')" class="profile-stat-label">
             Following
           </button>
