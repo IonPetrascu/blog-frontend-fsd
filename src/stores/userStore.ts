@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { usePostsStore } from './postsStore'
 import type { Ref } from 'vue'
 import type { User, Profile } from '@/shared/types'
+import type { FiltersType } from '@/shared/types'
 
 export const useUsersStore = defineStore('usersStore', () => {
   const profile: Ref<Profile | null> = ref(null)
@@ -100,16 +101,20 @@ export const useUsersStore = defineStore('usersStore', () => {
       return console.error('Registration failed:', await response.text())
     }
     const data = await response.json()
-    console.log(data)
 
     router.push('/login')
   }
 
-  const getUserInfo = async (id: number) => {
+  const getUserInfo = async (id: number, filters?: FiltersType) => {
     try {
       const token = checkToken()
 
-      const response = await fetch(`http://localhost:3000/api/profile/${id}`, {
+      const queryParams = new URLSearchParams({
+        sortBy: filters?.sortBy ?? '',
+        searchQuery: filters?.searchQuery ?? ''
+      })
+
+      const response = await fetch(`http://localhost:3000/api/profile/${id}?${queryParams}`, {
         method: 'GET',
         headers: {
           Authorization: token

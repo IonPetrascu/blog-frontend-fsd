@@ -16,6 +16,7 @@ export interface PostCard extends BasePost {
   user_email: string
   user_name: string
   user_img: number | null
+  video: string | null
 }
 export interface PostFull extends BasePost {
   u_id: number
@@ -110,4 +111,9 @@ export interface MessageType {
   user_id: number
   content: string
   sent_at: string
+}
+
+export interface FiltersType {
+  sortBy: string
+  searchQuery: string
 }

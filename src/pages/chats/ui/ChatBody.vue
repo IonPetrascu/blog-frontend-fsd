@@ -41,7 +41,7 @@ const emit = defineEmits<{
         <div class="message" v-if="msg.user_id !== userStore.user?.id">
           <div>
             <img v-if="activeChat.user_img" class="user-img"
-              :src="`http://localhost:3000/uploads/images/${activeChat.user_img}`" alt="" />
+              :src="`http://localhost:3000/upload/images/${activeChat.user_img}`" alt="" />
             <img v-else class="user-img" src="@/assets/images/default-user-img.jpg" alt="deafult image" />
           </div>
           <p class="message-text">{{ msg.content }}</p>
@@ -52,7 +52,7 @@ const emit = defineEmits<{
           <p class="message-text">{{ msg.content }}</p>
           <div>
             <img v-if="userStore.user?.img" class="user-img"
-              :src="`http://localhost:3000/uploads/images/${userStore.user.img}`" alt="" />
+              :src="`http://localhost:3000/upload/images/${userStore.user.img}`" alt="" />
             <img v-else class="user-img" src="@/assets/images/default-user-img.jpg" alt="deafult image" />
           </div>
         </div>

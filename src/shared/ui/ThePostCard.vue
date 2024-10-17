@@ -6,12 +6,15 @@ import { useUsersStore } from '@/stores/userStore';
 import ThePopup from './ThePopup.vue';
 import type { PopupType, PostCard } from '../types';
 import type { Ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+
 
 const props = defineProps<{
   post: PostCard;
 }>();
 
-
+const router = useRouter();
 const store = usePostsStore()
 const usersStore = useUsersStore()
 const popupInfo: Ref<PopupType | null> = ref(null);
@@ -35,6 +38,19 @@ const closePopup = (): void => {
   show.value = false;
   popupInfo.value = null;
 };
+
+const editPost = (): void => {
+  const { id, content, title, img, video } = props.post
+  const query = {
+    id,
+    content,
+    title,
+    img,
+    video
+  }
+  router.push({ name: 'post-write', query });
+};
+
 </script>
 <template>
   <div class="post">
@@ -42,12 +58,14 @@ const closePopup = (): void => {
       class="delete-post-btn">
       <img src="@/assets/icons/close-icon.svg" alt="delete post" />
     </button>
+    <button v-if="post.user_id === usersStore.user?.id" @click="editPost" class="edit-post-btn">
+      <img class="edit-img" src="../../assets/icons/edit.svg" alt="">
+    </button>
     <div class="post-img-wrapper">
       <img v-if="post.img" class="post-img kenburns-bottom-left"
         :src="`http://localhost:3000/upload/images/${post.img}`" :alt="post.title" />
       <img class="post-img" v-else src="@/assets/images/default-post-image.png" alt="default-post-image" />
     </div>
-
     <div class="post-content">
       <span class="post-theme">Technology</span>
       <router-link class="post-title" :to="`/post/${post.id}`">
@@ -61,7 +79,7 @@ const closePopup = (): void => {
           <img v-else class="post-author-img" src="@/assets/images/default-user-img.jpg" :alt="post.user_name" />
           <router-link :to="`/profile/${post.user_id}`" class="post-name">{{
             post.user_name
-          }}</router-link>
+            }}</router-link>
 
           <time class="post-date"> {{ datePost }}</time>
         </div>
@@ -91,6 +109,7 @@ const closePopup = (): void => {
         </div>
       </div>
     </div>
+
     <ThePopup @close-popup="closePopup" @action-of-popup="deletePost" :show="show" :title="popupInfo?.title ?? ''" />
   </div>
 </template>
@@ -237,6 +256,30 @@ const closePopup = (): void => {
   overflow: hidden;
   transition: scale 0.4s ease;
   z-index: 1;
+}
+
+.edit-post-btn {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  right: 40px;
+  top: 5px;
+  border: 2px solid var(--c-4);
+  border-radius: 50%;
+  overflow: hidden;
+  transition: scale 0.4s ease;
+  z-index: 1;
+  padding: 5px;
+  background-color: var(--white);
+
+}
+
+.edit-post-btn img {
+  width: 100%;
+}
+
+.edit-post-btn:hover {
+  scale: 1.1;
 }
 
 .delete-post-btn img {
