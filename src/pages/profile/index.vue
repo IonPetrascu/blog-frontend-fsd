@@ -8,6 +8,7 @@ import SubscribersPopup from '@/pages/profile/ui/TheSubscribersPopup.vue';
 import type { Subscriber, Subscribtion } from '@/shared/types';
 import type { Ref } from 'vue';
 import type { TypeSub } from '@/shared/types';
+import Filtres from '@/shared/ui/Filtres.vue';
 
 const route = useRoute()
 const router = useRouter();
@@ -137,13 +138,13 @@ watch(
         <div class="profile-stat-item">
           <span class="profile-stat-number">{{
             store.profile?.posts.length
-          }}</span>
+            }}</span>
           <span class="profile-stat-label">Posts</span>
         </div>
         <div class="profile-stat-item">
           <span class="profile-stat-number">{{
             store.profile?.subscribers.length
-          }}</span>
+            }}</span>
           <button @click="() => openSubPopup('subscribers')" class="profile-stat-label">
             Followers
           </button>
@@ -151,13 +152,14 @@ watch(
         <div class="profile-stat-item">
           <span class="profile-stat-number">{{
             store.profile?.subscribtions.length
-          }}</span>
+            }}</span>
           <button @click="() => openSubPopup('subscribtions')" class="profile-stat-label">
             Following
           </button>
         </div>
       </div>
     </div>
+    <Filtres @fetch="(filters) => store.getUserInfo(userId, filters)" />
     <div class="posts" v-if="store.profile !== null">
       <PostCard :post="post" v-for="post in store.profile.posts" :key="post.id" />
     </div>

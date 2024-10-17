@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import type { PostCard } from '@/shared/types'
 import type { Ref } from 'vue'
 import { useUsersStore } from './userStore'
+import type { FiltersType } from '@/shared/types'
 
 export const usePostsStore = defineStore('postsStore', () => {
   const posts: Ref<PostCard[]> = ref([])
@@ -17,11 +18,16 @@ export const usePostsStore = defineStore('postsStore', () => {
     return token
   }
 
-  const getPosts = async () => {
+  const getPosts = async (filters?: FiltersType) => {
     try {
       const token = getToken()
 
-      const response = await fetch('http://localhost:3000/api/posts', {
+      const queryParams = new URLSearchParams({
+        sortBy: filters?.sortBy ?? '',
+        searchQuery: filters?.searchQuery ?? ''
+      })
+
+      const response = await fetch(`http://localhost:3000/api/posts?${queryParams}`, {
         method: 'GET',
         headers: {
           Authorization: token
@@ -296,6 +302,7 @@ export const usePostsStore = defineStore('postsStore', () => {
       return { error: err.message }
     }
   }
+
   return {
     posts,
     loading,

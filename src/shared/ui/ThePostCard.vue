@@ -58,7 +58,7 @@ const editPost = (): void => {
       class="delete-post-btn">
       <img src="@/assets/icons/close-icon.svg" alt="delete post" />
     </button>
-    <button @click="editPost" class="edit-post-btn">
+    <button v-if="post.user_id === usersStore.user?.id" @click="editPost" class="edit-post-btn">
       <img class="edit-img" src="../../assets/icons/edit.svg" alt="">
     </button>
     <div class="post-img-wrapper">
@@ -270,6 +270,7 @@ const editPost = (): void => {
   transition: scale 0.4s ease;
   z-index: 1;
   padding: 5px;
+  background-color: var(--white);
 
 }
 

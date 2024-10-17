@@ -112,3 +112,8 @@ export interface MessageType {
   content: string
   sent_at: string
 }
+
+export interface FiltersType {
+  sortBy: string
+  searchQuery: string
+}

@@ -3,6 +3,7 @@ import PostCard from '../../shared/ui/ThePostCard.vue'
 import { usePostsStore } from '@/stores/postsStore';
 import { ref, onMounted } from 'vue';
 import type { Ref } from 'vue';
+import Filtres from '../../shared/ui/Filtres.vue';
 
 interface Popup {
   id: number
@@ -35,25 +36,30 @@ onMounted((): void => { store.getPosts() });
 
 </script>
 <template>
-  <div class="posts">
-    <PostCard @showPopupDelete="showPopupDelete" :post="post" v-for="post in store.posts" :key="post.id" />
-    <Transition>
-      <div @click.self="closePopup" v-if="show" class="overlay">
-        <div class="wrapper-popup">
-          <span>Delete</span>
-          <h4 v-if="popupInfo" class="title-popup">{{ popupInfo.title }}</h4>
-          <p>
-            You are about to delete the post. Make sure this is exactly what you
-            want to do.
-          </p>
-          <div class="buttons">
-            <button class="btn-delete" @click="deletePost">Delete</button>
-            <button class="btn-close" @click="closePopup">Close</button>
+  <div>
+    <Filtres @fetch="(filters) => store.getPosts(filters)" />
+    <div class="posts">
+
+      <PostCard @showPopupDelete="showPopupDelete" :post="post" v-for="post in store.posts" :key="post.id" />
+      <Transition>
+        <div @click.self="closePopup" v-if="show" class="overlay">
+          <div class="wrapper-popup">
+            <span>Delete</span>
+            <h4 v-if="popupInfo" class="title-popup">{{ popupInfo.title }}</h4>
+            <p>
+              You are about to delete the post. Make sure this is exactly what you
+              want to do.
+            </p>
+            <div class="buttons">
+              <button class="btn-delete" @click="deletePost">Delete</button>
+              <button class="btn-close" @click="closePopup">Close</button>
+            </div>
           </div>
         </div>
-      </div>
-    </Transition>
+      </Transition>
+    </div>
   </div>
+
 </template>
 <style scoped>
 .posts {
