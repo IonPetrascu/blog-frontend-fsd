@@ -52,7 +52,7 @@ const emit = defineEmits<{
           <p class="message-text">{{ msg.content }}</p>
           <div>
             <img v-if="userStore.user?.img" class="user-img"
-              :src="`http://localhost:3000/uploads/images/${userStore.user.img}`" alt="" />
+              :src="`http://localhost:3000/upload/images/${userStore.user.img}`" alt="" />
             <img v-else class="user-img" src="@/assets/images/default-user-img.jpg" alt="deafult image" />
           </div>
         </div>
