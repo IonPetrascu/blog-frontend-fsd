@@ -64,15 +64,17 @@ const handleImgSettings = (): void => {
 const handleImageChange = async (event: Event) => {
   try {
     const target = event.target as HTMLInputElement;
-    const file = target.files?.[0];
+    const img = target.files?.[0];
     const formData = new FormData();
+    const deleteImage = true
 
-    if (!file) throw new Error("Error");
+    if (!img) throw new Error("Error");
 
-    formData.append("file", file);
+    formData.append("img", img);
 
     if (store.profile?.user.img) {
-      formData.append("name", store.profile.user.img);
+      formData.append("imgName", store.profile.user.img);
+      formData.append("deleteImage", deleteImage)
     }
 
     await store.changeProfileImg(formData);

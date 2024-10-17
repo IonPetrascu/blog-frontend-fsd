@@ -193,6 +193,34 @@ export const usePostsStore = defineStore('postsStore', () => {
     }
   }
 
+  const updatePost = async (formData, id: number) => {
+    try {
+      const token = getToken()
+
+      const response = await fetch(`http://localhost:3000/api/posts/${id}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: token
+        },
+        body: formData
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to add post')
+      }
+      const post = await response.json()
+
+      post.likes_count = 0
+      post.dislikes_count = 0
+      post.user_vote = null
+
+      posts.value.unshift(post)
+      return post
+    } catch (err) {
+      err.value = err.message
+    }
+  }
+
   const getSinglePost = async (id: number) => {
     try {
       const token = getToken()
@@ -273,6 +301,7 @@ export const usePostsStore = defineStore('postsStore', () => {
     loading,
     getPosts,
     deletePost,
+    updatePost,
     addVote,
     deleteVote,
     addVoteToPost,

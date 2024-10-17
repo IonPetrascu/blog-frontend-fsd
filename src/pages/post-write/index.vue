@@ -1,23 +1,34 @@
 <script lang="ts" setup>
-import { onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { usePostsStore } from "@/stores/postsStore";
 import { VMarkdownEditor } from "vue3-markdown";
 import "vue3-markdown/dist/style.css";
+import { useRoute } from 'vue-router';
 
 const showFormPost = ref(true);
-const title = ref("");
-const description = ref("");
+const title = ref<string>("");
+const description = ref<string>("");
 const previewImage = ref<string | null>(null);
 const previewVideoPath = ref<string | null>(null);
 const store = usePostsStore();
 const inputImg = ref(null);
 const inputVideo = ref(null);
+const route = useRoute();
+const isImageDeleted = ref(false);
+const isVideoDeleted = ref(false);
+
+const id = computed<number | null>(() => {
+  const idValue = route.query.id;
+  return idValue && !isNaN(Number(idValue)) ? +idValue : null;
+});
 
 onMounted(() => store.getPosts());
 
 const handleSubmit = async () => {
-  const file = inputImg.value?.files[0];
-  const video = inputVideo.value?.files[0];
+  const file = inputImg.value?.files[0]
+  const video = inputVideo.value?.files[0]
+
+
 
   const formData = new FormData();
   if (!title.value || !description.value) {
@@ -46,14 +57,15 @@ const clearImage = () => {
     inputImg.value.value = "";
   }
   previewImage.value = null;
-
+  isImageDeleted.value = true;
 };
+
 const clearVideo = () => {
   if (inputVideo.value) {
     inputVideo.value.value = "";
   }
   previewVideoPath.value = null;
-
+  isVideoDeleted.value = true;
 };
 
 const clearForm = () => {
@@ -67,25 +79,78 @@ const handleImageChange = (event) => {
   const file = event.target.files[0];
   if (file) {
     previewImage.value = URL.createObjectURL(file);
+    isImageDeleted.value = true;
   }
 };
 const handleVideoChange = (event: Event) => {
-  previewVideoPath.value = (event.target as HTMLInputElement).value
+  const file = (event.target as HTMLInputElement).files?.[0];
+  if (file) {
+    previewVideoPath.value = URL.createObjectURL(file);
+    isVideoDeleted.value = true;
+
+  }
 };
 
-const handleUpload = (file) => {
-  console.log(file);
-  return "https://i.postimg.cc/52qCzTVw/pngwing-com.png";
-};
+const updatePost = async () => {
+  if (!id.value) return console.error('This post cannot be updated!');
+
+
+  const img = inputImg.value?.files[0] || null;
+  const video = inputVideo.value?.files[0] || null;
+
+  const formData = new FormData();
+
+  if (!title.value || !description.value) {
+    return;
+  }
+
+  formData.append("title", title.value);
+  formData.append("description", description.value);
+
+  if (isImageDeleted.value) {
+    formData.append("deleteImage", "true");
+  }
+
+  if (img) {
+    formData.append("img", img);
+  }
+
+  if (isVideoDeleted.value) {
+    formData.append("deleteVideo", "true");
+  }
+  if (video) {
+    formData.append("video", video);
+  }
+
+  const imgName = route.query.img;
+  formData.append("imgName", imgName);
+
+  const videoName = route.query.video;
+  formData.append("videoName", videoName);
+
+  try {
+    await store.updatePost(formData, id.value);
+  } catch (error) {
+    console.error("Error submitting the form:", error);
+  }
+
+}
+
+onMounted(() => {
+  if (route.query.id) {
+    title.value = route.query.title;
+    previewImage.value = route.query.img !== null ? `http://localhost:3000/upload/images/${route.query.img}` : null;
+    previewVideoPath.value = route.query.video;
+    description.value = route.query.content;
+  }
+});
 
 </script>
 <template>
   <div class="wrapper">
-    <form class="form" @submit.prevent="handleSubmit" v-if="showFormPost">
+    <form class="form" v-if="showFormPost">
       <h3 class="title">Title post</h3>
       <input v-model="title" type="text" placeholder="Title of post" required />
-
-
       <div class="wrapper-img">
         <h3 class="title">Image post</h3>
         <label v-if="!previewImage" class="label-file" for="input-file">Add image of post</label>
@@ -98,10 +163,6 @@ const handleUpload = (file) => {
           Clear img
         </button>
       </div>
-
-
-
-
       <div class="wrapper-video">
         <h3 class="title">Image post</h3>
         <label class="label-video" for="input-video">
@@ -114,12 +175,16 @@ const handleUpload = (file) => {
           <button class="btn-clear-video-path" @click="clearVideo">Delete video</button>
         </div>
       </div>
-
       <h3 class="title">Editor</h3>
-      <VMarkdownEditor class="editor" v-model="description" locale="en" :upload-action="handleUpload" />
-      <div class="buttons">
+      <VMarkdownEditor class="editor" v-model="description" locale="en" />
+      <div v-if="!id" class="buttons">
+        {{ id }}
         <button @click="clearForm" type="button">Cancel</button>
-        <button type="submit">Add post</button>
+        <button @click="handleSubmit" type="button" v-if="!id">Add post</button>
+      </div>
+      <div v-else class="buttons">
+        <button @click="clearForm" type="button">Cancel</button>
+        <button @click="updatePost" type="button">Save updated post</button>
       </div>
     </form>
   </div>

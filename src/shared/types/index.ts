@@ -16,6 +16,7 @@ export interface PostCard extends BasePost {
   user_email: string
   user_name: string
   user_img: number | null
+  video: string | null
 }
 export interface PostFull extends BasePost {
   u_id: number

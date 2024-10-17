@@ -100,7 +100,6 @@ export const useUsersStore = defineStore('usersStore', () => {
       return console.error('Registration failed:', await response.text())
     }
     const data = await response.json()
-    console.log(data)
 
     router.push('/login')
   }
