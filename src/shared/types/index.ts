@@ -5,6 +5,7 @@ interface BasePost {
   created_at: string
   updated_at: string
   img: string | null
+  tags: string[]
 }
 
 export interface PostCard extends BasePost {

@@ -191,6 +191,7 @@ export const usePostsStore = defineStore('postsStore', () => {
       post.likes_count = 0
       post.dislikes_count = 0
       post.user_vote = null
+      post.tags = []
 
       posts.value.unshift(post)
       return post
