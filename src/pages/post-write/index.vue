@@ -7,6 +7,7 @@ import { useRoute } from 'vue-router';
 
 const showFormPost = ref(true);
 const title = ref<string>("");
+const tags = ref<string>("");
 const description = ref<string>("");
 const previewImage = ref<string | null>(null);
 const previewVideoPath = ref<string | null>(null);
@@ -36,6 +37,7 @@ const handleSubmit = async () => {
   }
   formData.append("title", title.value);
   formData.append("description", description.value);
+  formData.append("tags", tags.value);
 
   if (file) {
     formData.append("file", file);
@@ -106,6 +108,7 @@ const updatePost = async () => {
 
   formData.append("title", title.value);
   formData.append("description", description.value);
+  formData.append("tags", tags.value);
 
   if (isImageDeleted.value) {
     formData.append("deleteImage", "true");
@@ -142,6 +145,7 @@ onMounted(() => {
     previewImage.value = route.query.img !== null ? `http://localhost:3000/upload/images/${route.query.img}` : null;
     previewVideoPath.value = route.query.video;
     description.value = route.query.content;
+    tags.value = route.query.tags?.join(',')
   }
 });
 
@@ -151,6 +155,8 @@ onMounted(() => {
     <form class="form" v-if="showFormPost">
       <h3 class="title">Title post</h3>
       <input v-model="title" type="text" placeholder="Title of post" required />
+      <h3 class="Tags">Tags</h3>
+      <input v-model="tags" placeholder="frontend,backend,blockchain" type="text">
       <div class="wrapper-img">
         <h3 class="title">Image post</h3>
         <label v-if="!previewImage" class="label-file" for="input-file">Add image of post</label>

@@ -32,7 +32,6 @@ const store = useUsersStore()
 }
 
 .header {
-  height: 80px;
   display: flex;
   align-items: center;
   justify-content: space-between;

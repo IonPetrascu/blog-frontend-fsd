@@ -40,17 +40,17 @@ const closePopup = (): void => {
 };
 
 const editPost = (): void => {
-  const { id, content, title, img, video } = props.post
+  const { id, content, title, img, video, tags } = props.post
   const query = {
     id,
     content,
     title,
     img,
-    video
+    video,
+    tags
   }
   router.push({ name: 'post-write', query });
 };
-
 </script>
 <template>
   <div class="post">
@@ -67,7 +67,14 @@ const editPost = (): void => {
       <img class="post-img" v-else src="@/assets/images/default-post-image.png" alt="default-post-image" />
     </div>
     <div class="post-content">
-      <span class="post-theme">Technology</span>
+      <div v-if="post.tags?.length > 0" class="post-tags">
+        <li v-for="tag in post.tags.slice(0, 3)" :key="tag">
+          <span class="post-tag">#{{ tag }}</span>
+        </li>
+        <li v-if="post.tags?.length > 3" class="post-tag">other...</li>
+      </div>
+
+
       <router-link class="post-title" :to="`/post/${post.id}`">
         {{ post.title }}
       </router-link>
@@ -173,7 +180,7 @@ const editPost = (): void => {
   height: 240px;
 }
 
-.post-theme {
+.post-tag {
   border-radius: 6px;
   padding: 4px 10px;
   width: 97px;
@@ -189,6 +196,13 @@ const editPost = (): void => {
   flex-direction: column;
   gap: 16px;
   margin-top: 15px;
+}
+
+.post-tags {
+  display: flex;
+  list-style-type: none;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 .post-bottom {

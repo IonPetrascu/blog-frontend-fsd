@@ -129,6 +129,13 @@ const goBack = (): void => router.go(-1);
         </div>
       </div>
       <div>
+        <ul class="post-tags">
+          <li class="post-tag" v-for="tag in post.tags" :key="tag">
+            #{{ tag }}
+          </li>
+        </ul>
+      </div>
+      <div>
         <TheVideo v-if="post.video" :src="`http://localhost:3000/api/video/${post.video}`" />
       </div>
       <VMarkdownView v-if="post?.content" class="description" :mode="mode" :content="post.content"></VMarkdownView>
@@ -190,6 +197,23 @@ const goBack = (): void => router.go(-1);
   font-weight: bold;
   margin-bottom: 10px;
   color: var(--c-4);
+}
+
+.post-tags {
+  display: flex;
+  align-items: center;
+  list-style-type: none;
+  margin-block: 10px;
+}
+
+.post-tag {
+  border-radius: 6px;
+  padding: 4px 10px;
+  height: 28px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 143%;
+  color: #4b6bfb;
 }
 
 .post-description {
