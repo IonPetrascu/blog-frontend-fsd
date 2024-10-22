@@ -1,8 +1,22 @@
 <script lang="ts" setup>
 import { RouterLink } from "vue-router";
 import type { Subscriber, Subscribtion } from "../../../shared/types";
+import { ref, computed } from "vue";
+import type { Ref } from "vue";
 
-defineProps<{
+const filterByName: Ref<string> = ref('')
+
+const filteredList = computed<Subscriber[] | Subscribtion[]>(() => {
+  return props.data
+    .filter((el) => {
+      if ('u_name' in el) {
+        return el.u_name.includes(filterByName.value);
+      }
+      return false;
+    });
+});
+
+const props = defineProps<{
   data: Subscriber[] | Subscribtion[],
   type: string,
 }>();
@@ -23,10 +37,10 @@ const emit = defineEmits<{
         </button>
       </div>
       <div v-if="data.length > 2" class="popup-search">
-        <input class="search" type="text" />
+        <input v-model="filterByName" class="search" type="text" />
       </div>
       <ul class="sub-list" v-if="data.length > 0">
-        <div class="sub-item" v-for="subscriber in data" :key="subscriber.subscriber_id">
+        <div class="sub-item" v-for="subscriber in filteredList" :key="subscriber.subscriber_id">
           <div>
             <img v-if="subscriber.img" class="sub-img" :src="`http://localhost:3000/upload/images/${subscriber.img}`" />
             <img v-else class="sub-img" src="@/assets/images/default-user-img.jpg" alt="default-user-img" />
