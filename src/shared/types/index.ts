@@ -19,12 +19,21 @@ export interface PostCard extends BasePost {
   user_img: number | null
   video: string | null
 }
+export interface PostSimilar extends BasePost {
+  user_id: number
+  u_email: string
+  u_name: string
+  u_img: number | null
+  video: string | null
+}
+
 export interface PostFull extends BasePost {
   u_id: number
   u_email: string
   u_name: string
   u_img: number | null
   u_video: string | null
+  similarPosts: PostSimilar
 }
 
 export type PopupType = {
