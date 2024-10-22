@@ -4,6 +4,7 @@ import TheComment from "./TheComment.vue";
 import { usePostsStore } from "@/stores/postsStore";
 import type { Comment, RespondType, VoteComment } from '../types'
 import type { Ref } from "vue";
+import BaseIcon from "./BaseIcon.vue";
 
 const props = defineProps<{
   comment: Comment;
@@ -97,11 +98,11 @@ const handleVote = async (is_like: boolean): Promise<void> => {
       </div>
       <div class="foter-comment">
         <button class="btn-vote" :class="{ active: localComment.user_vote }" @click="() => handleVote(true)">
-          <img class="like-img" src="@/assets/icons/like.svg" alt="like" />
+          <BaseIcon width="20px" height="20px" class="like-img" name="like" />
           <span> {{ localComment.like_count }}</span>
         </button>
         <button class="btn-vote" :class="{ active: localComment.user_vote === false }" @click="() => handleVote(false)">
-          <img class="dislike-img" src="@/assets/icons/like.svg" alt="dislike" />
+          <BaseIcon width="20px" height="20px" class="dislike-img" name="like" />
           <span>{{ localComment.dislike_count }}</span>
         </button>
         <button class="respond-btn" @click="handleRespond">Respond</button>

@@ -3,6 +3,7 @@ import { RouterLink } from "vue-router";
 import type { Subscriber, Subscribtion } from "../../../shared/types";
 import { ref, computed } from "vue";
 import type { Ref } from "vue";
+import BaseIcon from "@/shared/ui/BaseIcon.vue";
 
 const filterByName: Ref<string> = ref('')
 
@@ -33,7 +34,7 @@ const emit = defineEmits<{
       <div class="popup-header">
         <h3 class="popup-title">{{ type }}</h3>
         <button class="popup-close-btn" @click="emit('closePopup')">
-          <img src="@/assets/icons/close-icon.svg" alt="close popup" />
+          <BaseIcon name="close" />
         </button>
       </div>
       <div v-if="data.length > 2" class="popup-search">

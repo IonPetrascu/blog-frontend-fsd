@@ -7,7 +7,7 @@ import ThePopup from './ThePopup.vue';
 import type { PopupType, PostCard } from '../types';
 import type { Ref } from 'vue';
 import { useRouter } from 'vue-router';
-
+import BaseIcon from './BaseIcon.vue';
 
 
 const props = defineProps<{
@@ -56,10 +56,10 @@ const editPost = (): void => {
   <div class="post">
     <button @click="() => showPopupDelete(post.id, post.title)" v-if="post.user_id === usersStore.user?.id"
       class="delete-post-btn">
-      <img src="@/assets/icons/close-icon.svg" alt="delete post" />
+      <BaseIcon name="close" />
     </button>
     <button v-if="post.user_id === usersStore.user?.id" @click="editPost" class="edit-post-btn">
-      <img class="edit-img" src="../../assets/icons/edit.svg" alt="">
+      <BaseIcon name="edit" />
     </button>
     <div class="post-img-wrapper">
       <img v-if="post.img" class="post-img kenburns-bottom-left"
@@ -94,22 +94,21 @@ const editPost = (): void => {
           <div class="likes-btns">
             <button @click="handleVote(true)" class="like-btn">
               <span>{{ post.likes_count }}</span>
-              <img v-if="post.user_vote === null || post.user_vote === 0" src="@/assets/icons/like.svg" alt="like" />
-              <img v-else src="@/assets/icons/like-active.svg" alt="" />
+              <BaseIcon width="24px" height="24px" v-if="post.user_vote === null || post.user_vote === 0" name="like" />
+              <BaseIcon width="24px" height="24px" v-else name="like_active" />
             </button>
             <button @click="handleVote(false)" class="dislike-btn">
               <span>{{ post.dislikes_count }}</span>
-
-              <img v-if="post.user_vote === null || post.user_vote === 1" class="dislike-img"
-                src="@/assets/icons/like.svg" alt="" />
-              <img class="dislike-img" v-else src="@/assets/icons/like-active.svg" alt="" />
+              <BaseIcon width="24px" height="24px" v-if="post.user_vote === null || post.user_vote === 1" name="like"
+                class="dislike-img" />
+              <BaseIcon width="24px" height="24px" v-else name="like_active" class="dislike-img" />
             </button>
           </div>
           <div>
             <RouterLink :to="`/post/${post.id}`">
               <button class="comment-btn">
                 <span>{{ post.comments_count }}</span>
-                <img class="comment-img" src="@/assets/icons/comment-icon.svg" alt="" />
+                <BaseIcon width="24px" height="24px" name="comment" />
               </button>
             </RouterLink>
           </div>
@@ -231,10 +230,6 @@ const editPost = (): void => {
   gap: 5px;
 }
 
-.comment-img {
-  width: 25px;
-  height: 25px;
-}
 
 .likes-and-comment {
   display: flex;
@@ -270,6 +265,7 @@ const editPost = (): void => {
   overflow: hidden;
   transition: scale 0.4s ease;
   z-index: 1;
+  background: var(--white);
 }
 
 .edit-post-btn {

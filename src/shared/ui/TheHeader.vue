@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useUsersStore } from '@/stores/userStore';
+import BaseIcon from './BaseIcon.vue';
 
 const store = useUsersStore()
 
@@ -19,7 +20,7 @@ const store = useUsersStore()
       <RouterLink class="link" :to="`/profile/${store.user?.id}`">Profile</RouterLink>
       <RouterLink class="link" to="/chats">Chats</RouterLink>
       <button class="exit-btn" @click="store.logout">
-        <img src="@/assets/icons/exit.svg" alt="exit" />
+        <BaseIcon width="24px" height="24px" name="exit" />
       </button>
     </nav>
   </header>

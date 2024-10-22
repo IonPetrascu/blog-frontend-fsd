@@ -9,6 +9,7 @@ import type { Subscriber, Subscribtion } from '@/shared/types';
 import type { Ref } from 'vue';
 import type { TypeSub } from '@/shared/types';
 import Filtres from '@/shared/ui/Filtres.vue';
+import BaseIcon from '@/shared/ui/BaseIcon.vue';
 
 const route = useRoute()
 const router = useRouter();
@@ -108,7 +109,7 @@ watch(
             alt="Profile Image" />
           <img v-else src="@/assets/images/default-user-img.jpg" alt="Profile Image" />
           <button v-if="isMyProfile" @click="handleImgSettings" class="profile-avatar-settings">
-            <img src="@/assets/icons/settings.svg" alt="settings img" />
+            <BaseIcon width="24px" height="24px" name="settings" />
           </button>
           <div class="avatar-settings-list" v-if="showImgSettings">
             <input ref="inputImg" id="input-file" multiple type="file" accept="image/jpeg, image/png ,image/jpg"
@@ -138,13 +139,13 @@ watch(
         <div class="profile-stat-item">
           <span class="profile-stat-number">{{
             store.profile?.posts.length
-            }}</span>
+          }}</span>
           <span class="profile-stat-label">Posts</span>
         </div>
         <div class="profile-stat-item">
           <span class="profile-stat-number">{{
             store.profile?.subscribers.length
-            }}</span>
+          }}</span>
           <button @click="() => openSubPopup('subscribers')" class="profile-stat-label">
             Followers
           </button>
@@ -152,7 +153,7 @@ watch(
         <div class="profile-stat-item">
           <span class="profile-stat-number">{{
             store.profile?.subscribtions.length
-            }}</span>
+          }}</span>
           <button @click="() => openSubPopup('subscribtions')" class="profile-stat-label">
             Following
           </button>

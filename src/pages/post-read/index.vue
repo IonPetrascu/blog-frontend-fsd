@@ -10,6 +10,7 @@ import type { PostFull, Mode, Comment, VoteComment, RespondType } from "@/shared
 import type { Ref } from "vue";
 import "vue3-markdown/dist/style.css";
 import SimilarPost from "./ui/SimilarPost.vue";
+import BaseIcon from "@/shared/ui/BaseIcon.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -119,7 +120,7 @@ watch(
   <div v-if="post !== null && !loadingPost" class="post">
     <div>
       <button @click="goBack" class="btn-back">
-        <img src="@/assets/images/back.png" alt="back" />
+        <BaseIcon width="24px" height="24px" name="back" />
         <span>Back</span>
       </button>
       <h1 class="post-title">{{ post.title }}</h1>
@@ -163,7 +164,7 @@ watch(
             <div class="input-wrapper">
               <div v-if="respondCommentId !== null" class="response-info">
                 <button type="button" class="btn-clear" @click="removeRespondComment">
-                  <img src="@/assets/icons/close.svg" alt="close" />
+                  <BaseIcon width="24px" height="24px" name="close" />
                 </button>
                 {{ respondCommentName }}
               </div>

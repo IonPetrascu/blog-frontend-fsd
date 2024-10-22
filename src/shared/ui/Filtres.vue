@@ -2,6 +2,7 @@
 import type { FiltersType } from '@/shared/types';
 import { debounce } from '@/shared/utils/debounce'
 import { reactive, watch } from 'vue';
+import BaseIcon from './BaseIcon.vue';
 
 const filters = reactive<FiltersType>({
   sortBy: 'new',
@@ -36,10 +37,10 @@ watch(filters, () => debouncedFetchPosts(filters))
         <option value="old">Old</option>
       </select>
       <div class="input-wrap">
-        <img class="search-icon" src="@/assets/icons/search.svg" alt="search icon">
+        <BaseIcon width="16px" height="16px" name="search" />
         <input v-model="filters.searchQuery" class="input" placeholder="Search...">
         <button v-if="filters.searchQuery.length > 0" @click="clearSearchQuery" class="clear">
-          <img src="@/assets/icons/close.svg" alt="">
+          <BaseIcon width="16px" height="16px" name="close" />
         </button>
       </div>
     </div>
@@ -90,9 +91,5 @@ watch(filters, () => debouncedFetchPosts(filters))
 .clear {
   width: 16px;
   height: 16px;
-}
-
-.clear img {
-  width: 100%;
 }
 </style>
