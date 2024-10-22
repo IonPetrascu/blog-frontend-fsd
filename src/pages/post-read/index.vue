@@ -9,6 +9,7 @@ import TheVideo from "@/shared/ui/TheVideo.vue";
 import type { PostFull, Mode, Comment, VoteComment, RespondType } from "@/shared/types";
 import type { Ref } from "vue";
 import "vue3-markdown/dist/style.css";
+import SimilarPost from "./ui/SimilarPost.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -27,30 +28,23 @@ const mode: Ref<Mode> = ref('light');
 const loadingPost: Ref<boolean> = ref(false)
 const loadingComment: Ref<boolean> = ref(false)
 
-onMounted(async (): Promise<void> => {
+
+const fetchPostAndComments = async (postId: number) => {
   try {
-    loadingPost.value = true
-    loadingComment.value == true
+    loadingPost.value = true;
+    loadingComment.value = true;
 
-    post.value = await store.getSinglePost(id);
-    comments.value = await store.getComments(id);
+    post.value = await store.getSinglePost(postId);
+    comments.value = await store.getComments(postId);
 
-    loadingPost.value = false
-    loadingComment.value == false
+    loadingPost.value = false;
+    loadingComment.value = false;
   } catch (error) {
-    loadingPost.value = false
-    loadingComment.value == false
-    console.error(error)
+    loadingPost.value = false;
+    loadingComment.value = false;
+    console.error(error);
   }
-});
-
-watch(
-  comments,
-  () => {
-    commentsKey.value += 1;
-  },
-  { deep: true }
-);
+};
 
 const submitComment = async () => {
   if (!newComment.value.trim()) return;
@@ -102,8 +96,24 @@ const addVoteToComment = async ({
 };
 
 const clearInput = (): void => { newComment.value = "" }
-const goBack = (): void => router.go(-1);
+const goBack = (): void => { router.push('/') }
 
+onMounted(async (): Promise<void> => {
+  await fetchPostAndComments(id)
+});
+
+
+watch(() => route.params.id, async (id) => {
+  await fetchPostAndComments(+id)
+})
+
+watch(
+  comments,
+  () => {
+    commentsKey.value += 1;
+  },
+  { deep: true }
+);
 </script>
 <template>
   <div v-if="post !== null && !loadingPost" class="post">
@@ -140,38 +150,46 @@ const goBack = (): void => router.go(-1);
       </div>
       <VMarkdownView v-if="post?.content" class="description" :mode="mode" :content="post.content"></VMarkdownView>
     </div>
-    <form class="form-comment" @submit.prevent="submitComment">
-      <router-link :to="`/profile/${userStore.user.id}`">
-        <img v-if="userStore.user.img" class="user-img"
-          :src="`http://localhost:3000/upload/images/${userStore.user.img}`" :alt="userStore.user.u_name" />
-        <img v-else class="user-img" src="@/assets/images/default-user-img.jpg" :alt="post.u_name" />
-      </router-link>
+    <div class="body">
+      <div class="comment-section">
+        <form class="form-comment" @submit.prevent="submitComment">
+          <router-link :to="`/profile/${userStore.user.id}`">
+            <img v-if="userStore.user.img" class="user-img"
+              :src="`http://localhost:3000/upload/images/${userStore.user.img}`" :alt="userStore.user.u_name" />
+            <img v-else class="user-img" src="@/assets/images/default-user-img.jpg" :alt="post.u_name" />
+          </router-link>
 
-      <div class="form-body">
-        <div class="input-wrapper">
-          <div v-if="respondCommentId !== null" class="response-info">
-            <button type="button" class="btn-clear" @click="removeRespondComment">
-              <img src="@/assets/icons/close.svg" alt="close" />
-            </button>
-            {{ respondCommentName }}
+          <div class="form-body">
+            <div class="input-wrapper">
+              <div v-if="respondCommentId !== null" class="response-info">
+                <button type="button" class="btn-clear" @click="removeRespondComment">
+                  <img src="@/assets/icons/close.svg" alt="close" />
+                </button>
+                {{ respondCommentName }}
+              </div>
+              <input ref="commentInput" v-model="newComment" type="text" placeholder="Your comment"
+                class="comment-input" />
+            </div>
+            <div class="btns-wrapper">
+              <button v-if="newComment.length > 0" @click="clearInput" type="button" class="btn">
+                Cancel
+              </button>
+              <button type="submit" class="btn" :disabled="!newComment.trim()">Send</button>
+            </div>
           </div>
-          <input ref="commentInput" v-model="newComment" type="text" placeholder="Your comment" class="comment-input" />
-        </div>
-        <div class="btns-wrapper">
-          <button v-if="newComment.length > 0" @click="clearInput" type="button" class="btn">
-            Cancel
-          </button>
-          <button type="submit" class="btn" :disabled="!newComment.trim()">Send</button>
-        </div>
+        </form>
+        <ul v-if="!loadingComment" :key="commentsKey" class="post-comments">
+          <TheComment v-for="comment in comments" :key="comment.id" :comment="comment"
+            :setRespondComment="setRespondComment" :addVoteToComment="addVoteToComment" />
+        </ul>
+        <div v-else>Loading comments...</div>
       </div>
-    </form>
-    <ul v-if="!loadingComment" :key="commentsKey" class="post-comments">
-      <TheComment v-for="comment in comments" :key="comment.id" :comment="comment"
-        :setRespondComment="setRespondComment" :addVoteToComment="addVoteToComment" />
-    </ul>
-    <div v-else>Loading comments...</div>
+      <div class="similar-posts">
+        <SimilarPost :post="post" v-for="post in post.similarPosts" :key="post.id" />
+      </div>
+    </div>
+
   </div>
-  <div v-else>LOADING...</div>
 </template>
 <style scoped>
 .post {
@@ -180,6 +198,19 @@ const goBack = (): void => router.go(-1);
   border-radius: 8px;
   padding: 10px;
   margin-bottom: 20px;
+}
+
+.body {
+  display: flex;
+  gap: 10px;
+}
+
+.comment-section {
+  width: 50%;
+}
+
+.similar-posts {
+  width: 50%;
 }
 
 .img-wrapper {
