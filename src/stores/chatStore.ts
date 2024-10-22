@@ -88,10 +88,33 @@ export const useChatsStore = defineStore('chatsStore', () => {
     }
   }
 
+  const deleteChat = async (chatId: number) => {
+    try {
+      const token = getToken()
+
+      const response = await fetch(`http://localhost:3000/api/chats/${chatId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: token
+        }
+      })
+      if (!response.ok) {
+        throw new Error('Failed to delete chat')
+      }
+      const res = await response.json()
+      const { id } = await res
+      return id
+    } catch (err) {
+      console.log('Error creating chat:', err)
+      return { success: false, message: 'Network or server error' }
+    }
+  }
+
   return {
     chats,
     loading,
     getMyChats,
-    createChat
+    createChat,
+    deleteChat
   }
 })

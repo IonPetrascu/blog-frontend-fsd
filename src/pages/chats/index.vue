@@ -6,15 +6,16 @@ import WelcomeWidget from './ui/WelcomeWidget.vue';
 import SideWidget from './ui/SideWidget.vue';
 import ChatHeader from './ui/ChatHeader.vue';
 import ChatBody from './ui/ChatBody.vue';
+import ChatSettings from './ui/ChatSettings.vue';
 import type { ChatType, MessageType } from '@/shared/types'
 import type { Ref } from 'vue';
-
 
 const chats: Ref<ChatType[]> = ref([]);
 const messages: Ref<MessageType[]> = ref([]);
 const activeChatId: Ref<number | null> = ref(null);
 const socket = ref<any>(null);
 const connected: Ref<boolean> = ref(false);
+const activeSettings: Ref<boolean> = ref(false);
 const store = useChatsStore();
 const userStore = useUsersStore();
 
@@ -102,6 +103,17 @@ const setActiveChat = (id: number): void => {
   }
 };
 
+const handleSettings = (): void => {
+  activeSettings.value = !activeSettings.value
+}
+
+const deleteChat = async (): Promise<void> => {
+  if (!activeChatId.value) return
+  const id = await store.deleteChat(activeChatId.value)
+  chats.value = chats.value.filter((chat) => chat.chat_id !== id)
+}
+
+
 onMounted(async () => {
   chats.value = await store.getMyChats();
 });
@@ -126,9 +138,10 @@ onUnmounted(() => {
   <div class="main-chat">
     <SideWidget :chats="chats" @set-active-chat="setActiveChat" :activeChatId="activeChatId" />
     <div class="chat-wrapper" v-if="activeChatId && activeChat">
-      <ChatHeader :activeChat="activeChat" />
-      <ChatBody :activeChatId="activeChatId" :messages="messages" :activeChat="activeChat"
+      <ChatHeader @handle-settings="handleSettings" :activeChat="activeChat" />
+      <ChatBody v-if="!activeSettings" :activeChatId="activeChatId" :messages="messages" :activeChat="activeChat"
         @send-message="sendMessage" />
+      <ChatSettings @deleteChat="deleteChat" v-else />
     </div>
     <WelcomeWidget v-else />
   </div>

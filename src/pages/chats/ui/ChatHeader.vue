@@ -5,6 +5,11 @@ defineProps<{
   activeChat: ChatType
 }>();
 
+const emit = defineEmits<{
+  (e: 'handleSettings'): void
+}>()
+
+
 </script>
 <template>
   <div class="chat-header">
@@ -22,7 +27,7 @@ defineProps<{
       <span v-if="activeChat.last_message_sent_at" class="latest-online">last seen {{
         activeChat.last_message_sent_at.slice(11, 16) }}</span>
     </div>
-    <button class="chat-settings">
+    <button @click="emit('handleSettings')" class="chat-settings">
       <BaseIcon width="24px" height="24px" name="chat_settings" />
     </button>
   </div>
