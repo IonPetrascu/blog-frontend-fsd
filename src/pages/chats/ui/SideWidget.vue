@@ -1,21 +1,33 @@
 <script lang="ts" setup>
 import type { ChatType } from '@/shared/types';
+import { ref, computed } from 'vue';
+import type { Ref } from 'vue';
 
-defineProps<{
+const props = defineProps<{
   chats: ChatType[]
   activeChatId: number | null
 }>();
 
+const searchUser: Ref<string> = ref('')
+
+const filteredListOfUsers = computed(() => {
+  return props.chats.filter((chat) => chat?.user_name.toLocaleLowerCase()?.includes(searchUser.value.toLocaleLowerCase()))
+})
+
 const emit = defineEmits<{
-  (e: 'setActiveChat', id: number): void
+  (e: 'setActiveChat', id: number): void,
+  (e: 'handleNewUsers'): void
 }>()
 
 </script>
 <template>
   <div class="chat-sidebar">
-    <div class="chats-header"></div>
+    <div class="chats-header">
+      <input class="input-users" v-model="searchUser" type="text">
+    </div>
+    <button @click="() => emit('handleNewUsers')" class="chat-add">New chat</button>
     <div class="chat-list">
-      <div v-for="chat in chats" @click="() => emit('setActiveChat', chat.chat_id)" :key="chat.chat_id"
+      <div v-for="chat in filteredListOfUsers" @click="() => emit('setActiveChat', chat.chat_id)" :key="chat.chat_id"
         class="chat-item" :class="{
           active: chat.chat_id === activeChatId,
         }">
@@ -27,15 +39,18 @@ const emit = defineEmits<{
           <h3>{{ chat.user_name }}</h3>
           <span v-if="chat.last_message_content">{{
             chat.last_message_content
-          }}</span>
+            }}</span>
         </div>
         <div class="chat-item-info-msg">
           <time v-if="chat.last_message_sent_at" class="new-msg-time">{{
             chat.last_message_sent_at.slice(11, 16)
-          }}</time>
+            }}</time>
         </div>
       </div>
-      <button class="chat-add">New chat</button>
+      <div class="empty-list" v-if="filteredListOfUsers.length === 0">
+        The list is empty
+      </div>
+
     </div>
   </div>
 </template>
@@ -50,6 +65,24 @@ const emit = defineEmits<{
 .chats-header {
   height: 56px;
   border-bottom: 1px solid var(--c-1);
+  display: flex;
+  align-items: center;
+  padding: 5px;
+}
+
+.input-users {
+  width: 100%;
+  height: 30px;
+  border-radius: 5px;
+  outline: none;
+  border: 1px solid var(--c-4);
+  padding: 3px;
+}
+
+.empty-list {
+  text-align: center;
+  padding: 10px;
+  color: var(--rose);
 }
 
 .chat-list {
@@ -64,12 +97,17 @@ const emit = defineEmits<{
   cursor: pointer;
 }
 
+.chat-add:hover {
+  background: var(--c-3);
+}
+
 .chat-item {
   display: flex;
   align-items: center;
   gap: 16px;
   padding: 12px 16px;
   cursor: pointer;
+  border-bottom: 1px solid var(--c-1);
 }
 
 .chat-item.active {

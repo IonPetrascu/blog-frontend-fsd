@@ -28,6 +28,7 @@ const sendWelcomeMessage = (): void => {
   newMessage.value = "Hello!";
   emit('sendMessage', newMessage.value)
   closeWelcomePopup();
+  newMessage.value = "";
 };
 
 const emit = defineEmits<{

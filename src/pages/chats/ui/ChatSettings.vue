@@ -6,9 +6,17 @@ const emit = defineEmits<{
 </script>
 <template>
   <div class="wrapper">
-    <div>
-      <button @click="emit('deleteChat')">Delete chat </button>
-    </div>
+    <button class="delete-chat" @click="emit('deleteChat')">Delete chat </button>
   </div>
 </template>
-<style scoped></style>
+<style scoped>
+.wrapper {
+  padding: 10px;
+}
+
+.delete-chat {
+  background: var(--c-3);
+  padding: 10px;
+  border-radius: 10px;
+}
+</style>
