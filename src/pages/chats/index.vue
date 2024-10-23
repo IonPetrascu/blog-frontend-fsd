@@ -9,6 +9,7 @@ import ChatBody from './ui/ChatBody.vue';
 import ChatSettings from './ui/ChatSettings.vue';
 import type { ChatType, MessageType } from '@/shared/types'
 import type { Ref } from 'vue';
+import BaseIcon from '@/shared/ui/BaseIcon.vue';
 
 const chats: Ref<ChatType[]> = ref([]);
 const messages: Ref<MessageType[]> = ref([]);
@@ -16,6 +17,7 @@ const activeChatId: Ref<number | null> = ref(null);
 const socket = ref<any>(null);
 const connected: Ref<boolean> = ref(false);
 const activeSettings: Ref<boolean> = ref(false);
+const showNewUsers: Ref<boolean> = ref(false);
 const store = useChatsStore();
 const userStore = useUsersStore();
 
@@ -97,6 +99,8 @@ const setActiveChat = (id: number): void => {
   socket.value.close();
   activeChatId.value = id;
   const user_id = userStore.user?.id;
+  showNewUsers.value = false
+  activeSettings.value = false
 
   if (user_id && id) {
     connect();
@@ -108,11 +112,30 @@ const handleSettings = (): void => {
 }
 
 const deleteChat = async (): Promise<void> => {
-  if (!activeChatId.value) return
+  const confirmDelete = confirm('you want tot delete?')
+  if (!activeChatId.value || !confirmDelete) return
   const id = await store.deleteChat(activeChatId.value)
   chats.value = chats.value.filter((chat) => chat.chat_id !== id)
 }
 
+const handleNewUsers = async (): Promise<void> => {
+  await userStore.getUsers()
+  showNewUsers.value = !showNewUsers.value
+}
+
+const createChat = async (id: number): Promise<void> => {
+  const data = await store.createChat(id, 'New chat')
+  if (data.success) {
+    chats.value = [...chats.value, data.chat.chat]
+    showNewUsers.value = false
+    setActiveChat(data.chat.chat.chat_id)
+  }
+
+  if (data.message === "Chat already exists") {
+    showNewUsers.value = false
+    setActiveChat(data.chat.id)
+  }
+}
 
 onMounted(async () => {
   chats.value = await store.getMyChats();
@@ -136,9 +159,22 @@ onUnmounted(() => {
 </script>
 <template>
   <div class="main-chat">
-    <SideWidget :chats="chats" @set-active-chat="setActiveChat" :activeChatId="activeChatId" />
-    <div class="chat-wrapper" v-if="activeChatId && activeChat">
-      <ChatHeader @handle-settings="handleSettings" :activeChat="activeChat" />
+    <SideWidget @handleNewUsers="handleNewUsers" :chats="chats" @set-active-chat="setActiveChat"
+      :activeChatId="activeChatId" />
+    <div class="users-list" v-if="showNewUsers">
+      <div class="user-block" v-for="user in userStore.users" :key="user.id">
+        <div class="user-img">
+          <img v-if="user.img" :src="`http://localhost:3000/upload/images/${user.img}`" :alt="user.u_name">
+          <img v-else :src="`/src/assets/images/default-user-img.jpg`" :alt="user.u_name">
+        </div>
+        <router-link :to="`/profile/${user.id}`">{{ user.u_name }}</router-link>
+        <button @click="createChat(user.id)" class="message-btn">
+          <BaseIcon width="24px" height="24px" name="message" />
+        </button>
+      </div>
+    </div>
+    <div class="chat-wrapper" v-else-if="activeChatId && activeChat">
+      <ChatHeader :activeSettings="activeSettings" @handle-settings="handleSettings" :activeChat="activeChat" />
       <ChatBody v-if="!activeSettings" :activeChatId="activeChatId" :messages="messages" :activeChat="activeChat"
         @send-message="sendMessage" />
       <ChatSettings @deleteChat="deleteChat" v-else />
@@ -147,6 +183,44 @@ onUnmounted(() => {
   </div>
 </template>
 <style scoped>
+.users-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: start;
+  gap: 10px;
+  padding: 10px;
+  flex-grow: 1;
+  height: 100%;
+}
+
+.user-block {
+  padding: 10px;
+  border: 1px solid var(--c-4);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.message-btn {
+  width: min-content;
+}
+
+.message-btn:hover {
+  transform: scale(1.04);
+}
+
+.user-img {
+  width: 50px;
+  height: 50px;
+}
+
+.user-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .main-chat {
   display: flex;
   border: 1px solid var(--c-1);
@@ -165,6 +239,7 @@ onUnmounted(() => {
   align-items: center;
   padding: 8px 16px;
   gap: 16px;
+  border-bottom: 1px solid var(--c-1);
 }
 
 .chat-body {

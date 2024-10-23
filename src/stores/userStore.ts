@@ -9,6 +9,7 @@ import type { FiltersType } from '@/shared/types'
 export const useUsersStore = defineStore('usersStore', () => {
   const profile: Ref<Profile | null> = ref(null)
   const user: Ref<User | null> = ref(null)
+  const users: Ref<User[]> = ref([])
   const loading: Ref<boolean> = ref(false)
   const isAuth: Ref<boolean> = ref(false)
   const errorMessage: Ref<string> = ref('')
@@ -285,12 +286,36 @@ export const useUsersStore = defineStore('usersStore', () => {
     }
   }
 
+  const getUsers = async () => {
+    try {
+      const token = checkToken()
+
+      const response = await fetch(`http://localhost:3000/api/profiles`, {
+        method: 'GET',
+        headers: {
+          Authorization: token
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch users')
+      }
+
+      const data = await response.json()
+      users.value = data
+    } catch (err) {
+      console.error(err.message)
+      return { error: err.message }
+    }
+  }
+
   return {
     user,
     errorMessage,
     loading,
     isAuthenticated,
     profile,
+    users,
     getMyInfo,
     login,
     register,
@@ -302,6 +327,7 @@ export const useUsersStore = defineStore('usersStore', () => {
     deletePostFromProfile,
     checkCredential,
     sendTokenToServer,
-    deleteProfileImg
+    deleteProfileImg,
+    getUsers
   }
 })

@@ -3,6 +3,7 @@ import type { ChatType } from '@/shared/types';
 import BaseIcon from '@/shared/ui/BaseIcon.vue';
 defineProps<{
   activeChat: ChatType
+  activeSettings: boolean
 }>();
 
 const emit = defineEmits<{
@@ -18,7 +19,7 @@ const emit = defineEmits<{
     <img v-else class="chat-img-user" src="@/assets/images/default-user-img.jpg" alt="default image" />
 
     <div class="chat-info">
-      <router-link :to="`/profile/${activeChat.user_id}`">
+      <router-link class="link-user" :to="`/profile/${activeChat.user_id}`">
         <h3 v-if="activeChat.user_name" class="user-name">
           {{ activeChat.user_name }}
         </h3>
@@ -28,7 +29,8 @@ const emit = defineEmits<{
         activeChat.last_message_sent_at.slice(11, 16) }}</span>
     </div>
     <button @click="emit('handleSettings')" class="chat-settings">
-      <BaseIcon width="24px" height="24px" name="chat_settings" />
+      <BaseIcon v-if="activeSettings" width="24px" height="24px" name="close" />
+      <BaseIcon v-else width="24px" height="24px" name="chat_settings" />
     </button>
   </div>
 </template>
@@ -49,6 +51,11 @@ const emit = defineEmits<{
 
 .chat-info {
   flex-grow: 1;
+}
+
+.link-user {
+  display: block;
+  width: min-content;
 }
 
 .user-name {

@@ -58,9 +58,9 @@ export const useChatsStore = defineStore('chatsStore', () => {
       })
 
       switch (response.status) {
-        case 200: {
+        case 302: {
           const existingChatData = await response.json()
-          return { success: true, message: 'Chat already exists', chat: existingChatData.chat }
+          return { success: false, message: 'Chat already exists', chat: existingChatData.chat }
         }
         case 201: {
           const createdChatData = await response.json()
