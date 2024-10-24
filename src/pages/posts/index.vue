@@ -2,8 +2,10 @@
 import PostCard from '../../shared/ui/ThePostCard.vue'
 import { usePostsStore } from '@/stores/postsStore';
 import { ref, onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
 import type { Ref } from 'vue';
 import Filtres from '../../shared/ui/Filtres.vue';
+import BaseNavigation from '@/shared/ui/BaseNavigation.vue';
 
 interface Popup {
   id: number
@@ -14,6 +16,7 @@ interface Popup {
 const store = usePostsStore();
 const show: Ref<boolean> = ref(false);
 const popupInfo = ref<Popup | null>(null);
+const { totalPages, filters } = storeToRefs(store);
 
 const deletePost = (): void => {
   if (!popupInfo.value) return
@@ -32,15 +35,18 @@ const closePopup = (): void => {
   popupInfo.value = null;
 };
 
-onMounted((): void => { store.getPosts() });
+onMounted((): void => {
+  store.getPosts()
+});
 
 </script>
 <template>
   <div>
-    <Filtres @fetch="(filters) => store.getPosts(filters)" />
+    <Filtres :filters="store.filters" @setFiltres="store.setFilters" @fetch="() => store.getPosts()" />
     <div class="posts">
-
       <PostCard @showPopupDelete="showPopupDelete" :post="post" v-for="post in store.posts" :key="post.id" />
+
+
       <Transition>
         <div @click.self="closePopup" v-if="show" class="overlay">
           <div class="wrapper-popup">
@@ -58,6 +64,10 @@ onMounted((): void => { store.getPosts() });
         </div>
       </Transition>
     </div>
+    <div class="no-posts" v-if="store.posts.length === 0">
+      No posts found!
+    </div>
+    <BaseNavigation :filters="filters" @setPage="store.setPage" :currentPage="filters.page" :totalPages="totalPages" />
   </div>
 
 </template>
@@ -128,6 +138,12 @@ onMounted((): void => { store.getPosts() });
 .btn-close {
   background: var(--c-3);
   padding: 5px 10px;
+}
+
+.no-posts {
+  text-align: center;
+  color: var(--rose);
+  font-size: 2em;
 }
 
 @keyframes gb-popup-scale-blur {

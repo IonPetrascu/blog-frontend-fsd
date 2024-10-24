@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { usePostsStore } from './postsStore'
 import type { Ref } from 'vue'
@@ -14,8 +14,23 @@ export const useUsersStore = defineStore('usersStore', () => {
   const isAuth: Ref<boolean> = ref(false)
   const errorMessage: Ref<string> = ref('')
   const router = useRouter()
+  const totalPages: Ref<number> = ref(0)
 
   const isAuthenticated = computed((): boolean => isAuth.value)
+
+  const filters = reactive<FiltersType>({
+    sortBy: 'new',
+    searchQuery: '',
+    page: 1
+  })
+
+  const setPorfilePostsFilters = (updatedFilters: Partial<FiltersType>, id: number) => {
+    filters.sortBy = updatedFilters.sortBy ?? filters.sortBy
+    filters.searchQuery =
+      updatedFilters.searchQuery !== undefined ? updatedFilters.searchQuery : filters.searchQuery
+    filters.page = 1
+    getUserInfo(id)
+  }
 
   const checkToken = (): string | null => {
     const token = localStorage.getItem('token')
@@ -106,13 +121,14 @@ export const useUsersStore = defineStore('usersStore', () => {
     router.push('/login')
   }
 
-  const getUserInfo = async (id: number, filters?: FiltersType) => {
+  const getUserInfo = async (id: number) => {
     try {
       const token = checkToken()
 
       const queryParams = new URLSearchParams({
-        sortBy: filters?.sortBy ?? '',
-        searchQuery: filters?.searchQuery ?? ''
+        sortBy: filters.sortBy,
+        searchQuery: filters.searchQuery,
+        page: filters.page.toString()
       })
 
       const response = await fetch(`http://localhost:3000/api/profile/${id}?${queryParams}`, {
@@ -131,6 +147,7 @@ export const useUsersStore = defineStore('usersStore', () => {
 
       const postStore = usePostsStore()
       postStore.posts = data.posts
+      totalPages.value = data.totalPages
     } catch (err) {
       console.error(err.message)
       return { error: err.message }
@@ -309,6 +326,11 @@ export const useUsersStore = defineStore('usersStore', () => {
     }
   }
 
+  const setPage = (newPage: number, id: number) => {
+    filters.page = newPage
+    getUserInfo(id)
+  }
+
   return {
     user,
     errorMessage,
@@ -316,6 +338,8 @@ export const useUsersStore = defineStore('usersStore', () => {
     isAuthenticated,
     profile,
     users,
+    filters,
+    totalPages,
     getMyInfo,
     login,
     register,
@@ -328,6 +352,8 @@ export const useUsersStore = defineStore('usersStore', () => {
     checkCredential,
     sendTokenToServer,
     deleteProfileImg,
-    getUsers
+    getUsers,
+    setPorfilePostsFilters,
+    setPage
   }
 })
