@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, reactive } from 'vue'
 import type { PostCard } from '@/shared/types'
 import type { Ref } from 'vue'
 import { useUsersStore } from './userStore'
@@ -8,6 +8,21 @@ import type { FiltersType } from '@/shared/types'
 export const usePostsStore = defineStore('postsStore', () => {
   const posts: Ref<PostCard[]> = ref([])
   const loading: Ref<boolean> = ref(false)
+  const totalPages: Ref<number> = ref(0)
+
+  const filters = reactive<FiltersType>({
+    sortBy: 'new',
+    searchQuery: '',
+    page: 1
+  })
+
+  const setFilters = (updatedFilters: Partial<FiltersType>) => {
+    filters.sortBy = updatedFilters.sortBy ?? filters.sortBy
+    filters.searchQuery =
+      updatedFilters.searchQuery !== undefined ? updatedFilters.searchQuery : filters.searchQuery
+    filters.page = 1
+    getPosts()
+  }
 
   const getToken = (): string | null => {
     const token = localStorage.getItem('token')
@@ -18,13 +33,14 @@ export const usePostsStore = defineStore('postsStore', () => {
     return token
   }
 
-  const getPosts = async (filters?: FiltersType) => {
+  const getPosts = async () => {
     try {
       const token = getToken()
 
       const queryParams = new URLSearchParams({
-        sortBy: filters?.sortBy ?? '',
-        searchQuery: filters?.searchQuery ?? ''
+        sortBy: filters.sortBy,
+        searchQuery: filters.searchQuery,
+        page: filters.page.toString()
       })
 
       const response = await fetch(`http://localhost:3000/api/posts?${queryParams}`, {
@@ -37,7 +53,9 @@ export const usePostsStore = defineStore('postsStore', () => {
       if (!response.ok) {
         throw new Error('Failed to get post')
       }
-      posts.value = await response.json()
+      const data = await response.json()
+      posts.value = data.posts
+      totalPages.value = data.totalPages
     } catch (err) {
       err.value = err.message
     }
@@ -304,9 +322,16 @@ export const usePostsStore = defineStore('postsStore', () => {
     }
   }
 
+  const setPage = (newPage: number) => {
+    filters.page = newPage
+    getPosts()
+  }
+
   return {
     posts,
     loading,
+    totalPages,
+    filters,
     getPosts,
     deletePost,
     updatePost,
@@ -316,6 +341,8 @@ export const usePostsStore = defineStore('postsStore', () => {
     createPost,
     getSinglePost,
     getComments,
-    addComment
+    addComment,
+    setPage,
+    setFilters
   }
 })

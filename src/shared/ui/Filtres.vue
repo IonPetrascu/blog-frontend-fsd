@@ -1,36 +1,39 @@
 <script lang="ts" setup>
-import type { FiltersType } from '@/shared/types';
 import { debounce } from '@/shared/utils/debounce'
-import { reactive, watch } from 'vue';
 import BaseIcon from './BaseIcon.vue';
-
-const filters = reactive<FiltersType>({
-  sortBy: 'new',
-  searchQuery: ''
+defineProps({
+  filters: Object
 })
+
+const emit = defineEmits(['fetch', 'setFiltres'])
 const delay: number = 1000
 
-const emit = defineEmits<{
-  (e: 'fetch', filters: FiltersType): void
-}>()
-
-const debouncedFetchPosts = debounce(() => emit('fetch', filters), delay);
+const debouncedSetFilters = debounce((value: string) => {
+  emit('setFiltres', { searchQuery: value })
+}, delay);
 
 const onChangeSelect = (e: Event): void => {
-  filters.sortBy = (e.target as HTMLSelectElement).value
+  const value = (e.target as HTMLSelectElement).value;
+  emit('setFiltres', { sortBy: value })
+}
+
+const onChangeQuery = (e: Event): void => {
+  const value = (e.target as HTMLInputElement).value;
+  debouncedSetFilters(value);
 }
 
 const clearSearchQuery = (): void => {
-  filters.searchQuery = ''
+  emit('setFiltres', { searchQuery: '' })
 }
-
-watch(filters, () => debouncedFetchPosts(filters))
 </script>
 <template>
   <div class="header">
     <h2 class="title">
-      {{ !filters.searchQuery ? 'All posts' : filters.searchQuery }}
+      {{ !filters?.searchQuery ? 'All posts' : `Search ${filters?.searchQuery}` }}
     </h2>
+    <div>
+      Page {{ filters?.page }}
+    </div>
     <div class="filtres">
       <select @change="onChangeSelect" class="select" name="" id="">
         <option value="new">New</option>
@@ -38,8 +41,8 @@ watch(filters, () => debouncedFetchPosts(filters))
       </select>
       <div class="input-wrap">
         <BaseIcon width="16px" height="16px" name="search" />
-        <input v-model="filters.searchQuery" class="input" placeholder="Search...">
-        <button v-if="filters.searchQuery.length > 0" @click="clearSearchQuery" class="clear">
+        <input @input="onChangeQuery" v-model="filters.searchQuery" class="input" placeholder="Search...">
+        <button v-if="filters?.searchQuery.length > 0" @click="clearSearchQuery" class="clear">
           <BaseIcon width="16px" height="16px" name="close" />
         </button>
       </div>

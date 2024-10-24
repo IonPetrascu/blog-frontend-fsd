@@ -10,6 +10,8 @@ import type { Ref } from 'vue';
 import type { TypeSub } from '@/shared/types';
 import Filtres from '@/shared/ui/Filtres.vue';
 import BaseIcon from '@/shared/ui/BaseIcon.vue';
+import BaseNavigation from '@/shared/ui/BaseNavigation.vue';
+import { storeToRefs } from 'pinia';
 
 const route = useRoute()
 const router = useRouter();
@@ -18,6 +20,8 @@ const chatStore = useChatsStore()
 const showImgSettings: Ref<boolean> = ref(false);
 const showSubscribers: Ref<boolean> = ref(false);
 const popupDataType: Ref<string> = ref("");
+
+const { totalPages, filters } = storeToRefs(store);
 
 const userId = computed((): number => +route.params.id);
 
@@ -160,10 +164,16 @@ watch(
         </div>
       </div>
     </div>
-    <Filtres @fetch="(filters) => store.getUserInfo(userId, filters)" />
+    <Filtres :filters="filters" @setFiltres="(filtre) => store.setPorfilePostsFilters(filtre, userId)"
+      @fetch="() => store.getUserInfo(userId)" />
     <div class="posts" v-if="store.profile !== null">
       <PostCard :post="post" v-for="post in store.profile.posts" :key="post.id" />
     </div>
+    <div class="no-posts" v-if="store.profile?.posts.length === 0">
+      No posts found!
+    </div>
+    <BaseNavigation :filters="filters" @setPage="(newPage) => store.setPage(newPage, userId)"
+      :currentPage="filters.page" :totalPages="totalPages" />
     <SubscribersPopup v-if="showSubscribers" :data="popupData" :type="popupDataType" @close-popup="closePopup" />
   </div>
 </template>
@@ -273,6 +283,12 @@ watch(
   gap: 10px;
   padding-inline: 10px;
   margin-top: 20px;
+}
+
+.no-posts {
+  text-align: center;
+  color: var(--rose);
+  font-size: 2em;
 }
 
 @media (max-width: 1040px) {

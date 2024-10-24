@@ -126,4 +126,5 @@ export interface MessageType {
 export interface FiltersType {
   sortBy: string
   searchQuery: string
+  page: number
 }
