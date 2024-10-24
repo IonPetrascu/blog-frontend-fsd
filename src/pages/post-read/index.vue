@@ -136,7 +136,7 @@ watch(
 
           <span v-if="post.created_at !== undefined" class="post-info-date">{{
             post.created_at.slice(0, 10)
-            }}</span>
+          }}</span>
         </div>
       </div>
       <div>
@@ -147,7 +147,7 @@ watch(
         </ul>
       </div>
       <div>
-        <TheVideo v-if="post.video" :src="`http://localhost:3000/api/video/${post.video}`" />
+        <TheVideo v-if="post.u_video" :src="`http://localhost:3000/api/video/${post.u_video}`" />
       </div>
       <VMarkdownView v-if="post?.content" class="description" :mode="mode" :content="post.content"></VMarkdownView>
     </div>
