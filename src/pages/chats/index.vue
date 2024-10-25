@@ -172,7 +172,11 @@ onUnmounted(() => {
           <BaseIcon width="24px" height="24px" name="message" />
         </button>
       </div>
+      <div v-if="!userStore.users.length">
+        List is empty
+      </div>
     </div>
+
     <div class="chat-wrapper" v-else-if="activeChatId && activeChat">
       <ChatHeader :activeSettings="activeSettings" @handle-settings="handleSettings" :activeChat="activeChat" />
       <ChatBody v-if="!activeSettings" :activeChatId="activeChatId" :messages="messages" :activeChat="activeChat"
