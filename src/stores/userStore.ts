@@ -91,7 +91,8 @@ export const useUsersStore = defineStore('usersStore', () => {
     })
 
     if (!response.ok) {
-      return console.error('Registration failed:', await response.text())
+      const errorData = await response.json()
+      return Promise.reject(errorData.message)
     }
 
     const { token } = await response.json()
@@ -114,10 +115,9 @@ export const useUsersStore = defineStore('usersStore', () => {
     })
 
     if (!response.ok) {
-      return console.error('Registration failed:', await response.text())
+      const errorData = await response.json()
+      return Promise.reject(errorData.message)
     }
-    const data = await response.json()
-
     router.push('/login')
   }
 
