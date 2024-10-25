@@ -1,16 +1,42 @@
 <script lang="ts" setup>
 import { useUsersStore } from '@/stores/userStore';
 import { ref } from 'vue';
+import { isValidEmail, validatePasswordComplexity, isValidName } from '@/shared/utils/validators';
 
 const email = ref<string>("");
 const password = ref<string>("");
 const name = ref<string>("");
-
+const errorMessage = ref('')
+const startValidation = ref(false)
 const store = useUsersStore()
 
-const handleSubmit = (): void => {
-  store.register(email.value, name.value, password.value);
-};
+const handleSubmit = async () => {
+  startValidation.value = true;
+
+  if (isValidEmail(email.value)) {
+    const passwordError = validatePasswordComplexity(password.value);
+    if (passwordError) {
+      errorMessage.value = passwordError;
+      return;
+    }
+    const nameError = isValidName(name.value);
+    if (nameError) {
+      errorMessage.value = "Invalid name";
+      return;
+    }
+
+    try {
+      await store.register(email.value, name.value, password.value);
+      errorMessage.value = "";
+    } catch (error) {
+      errorMessage.value = error;
+    }
+  } else {
+    errorMessage.value = "Invalid email";
+  }
+}
+
+
 </script>
 <template>
   <div class="wrapper">
@@ -19,6 +45,7 @@ const handleSubmit = (): void => {
       <input v-model="email" type="email" placeholder="Enter your email" required />
       <input v-model="name" type="text" placeholder="Enter your name" required />
       <input v-model="password" type="password" placeholder="Enter your password" required />
+      <div class="error-message">{{ errorMessage }}</div>
       <button type="submit">Register</button>
     </form>
   </div>
