@@ -15,7 +15,7 @@ const datePost = computed<string>(() => transformToLocalTime(props.post.created_
         :src="`http://localhost:3000/upload/images/${post.img}`" :alt="post.title" />
       <img class="post-img" v-else src="@/assets/images/default-post-image.png" alt="default-post-image" />
     </div>
-    <div>
+    <div class="post-content">
       <router-link class="post-title" :to="`/post/${post.id}`">
         {{ post.title }}
       </router-link>
@@ -26,7 +26,6 @@ const datePost = computed<string>(() => transformToLocalTime(props.post.created_
         <li v-if="post.tags?.length > 3" class="post-tag">other...</li>
       </ul>
       <time class="post-date"> {{ datePost }}</time>
-      <p class="description">{{ post.content }}</p>
     </div>
   </div>
 </template>
@@ -55,13 +54,9 @@ const datePost = computed<string>(() => transformToLocalTime(props.post.created_
   width: 150px;
 }
 
-.description {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.5;
-  max-height: 3em;
+.post-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 </style>
